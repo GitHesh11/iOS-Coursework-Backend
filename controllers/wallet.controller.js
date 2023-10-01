@@ -27,9 +27,14 @@ exports.addTransaction = (req, res) => {
 exports.getTransactionList = async (req, res) => {
     let isFiltered = false;
     let filterType = null;
+    let transType = 0;
 
     if ('filterType' in req.body) {
         filterType = req.body.filterType;
+    }
+
+    if ('transType' in req.body) {
+        transType = req.body.transType;
     }
 
     const user = await db.wallet.findOne({userId: req.body.userId});
@@ -44,10 +49,12 @@ exports.getTransactionList = async (req, res) => {
 
     const filteredTransactions = filterTransactions(user.transactionList, filterType, new Date());
 
+    const filteredTransactionsType = filterTypes(filteredTransactions, transType);
+
     res.status(200).send({
         status: true, data: {
             isFiltered: isFiltered,
-            transactionList: filteredTransactions
+            transactionList: filteredTransactionsType
         }
     })
 }
@@ -123,6 +130,20 @@ function filterTransactions(transactions, filter, currentDate) {
             );
         } else if (filter === "3") {
             return transactionDate.getFullYear() === currentDate.getFullYear();
+        } else {
+            return true;
+        }
+    });
+}
+
+function filterTypes(transactions, type) {
+    return transactions.filter((transaction) => {
+        if (type === "0") {
+            return true;
+        } else if (type === "1") {
+            return transaction.transactionType === 1;
+        } else if (type === "2") {
+            return transaction.transactionType === 2;
         } else {
             return true;
         }
