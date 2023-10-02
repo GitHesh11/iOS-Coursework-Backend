@@ -27,7 +27,7 @@ exports.addTransaction = (req, res) => {
 exports.getTransactionList = async (req, res) => {
     let isFiltered = false;
     let filterType = null;
-    let transType = 0;
+    let transType = null;
 
     if ('filterType' in req.body) {
         filterType = req.body.filterType;
