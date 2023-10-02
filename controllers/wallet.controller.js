@@ -16,8 +16,8 @@ exports.addTransaction = (req, res) => {
         $push: {transactionList: {$each: [newTransactionData], $position: 0}}
     }, {new: true, upsert: true}).then(r => {
         if (r != null) {
-            console.log(`wallet updated ${r}`);
-            res.status(200).send({status: true, data: r})
+            console.log(`wallet updated ${newTransactionData}`);
+            res.status(200).send({status: true, data: newTransactionData})
         } else {
             res.status(400).send({status: false, message: 'Update Error'});
         }
@@ -120,15 +120,15 @@ exports.getWalletDetails = async (req, res) => {
 function filterTransactions(transactions, filter, currentDate) {
     return transactions.filter((transaction) => {
         const transactionDate = new Date(transaction.transactionDate);
-        if (filter === "1") {
+        if (filter === "0") {
             return (
                 transactionDate.getDate() === currentDate.getDate()
             );
-        } else if (filter === "2") {
+        } else if (filter === "1") {
             return (
                 transactionDate.getMonth() === currentDate.getMonth()
             );
-        } else if (filter === "3") {
+        } else if (filter === "2") {
             return transactionDate.getFullYear() === currentDate.getFullYear();
         } else {
             return true;
